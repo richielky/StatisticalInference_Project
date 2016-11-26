@@ -3,12 +3,17 @@ title: "Central Limit Theorem Exponent Distribution"
 author: "Richie Liew"
 date: "Nov 15, 2016"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(fig.width=13, fig.height=9, fig.path='Figures/', echo=TRUE, warning=FALSE, message=FALSE)
+```
+
+Library Required
+```{r}
+library(ggplot2)
 ```
 
 ### Part 1: Simulation Exercise Instructionsless 
@@ -25,28 +30,41 @@ Illustrate via simulation and associated explanatory text the properties of the 
 *In point 3, focus on the difference between the distribution of a large collection of random exponentials and the distribution of a large collection of averages of 40 exponentials.*
 
 #### Data Preparation
+
+The Central Limit Theorem (CLT) states that the sample mean of identically distributed independent random variables is approximately normally distributed if the sample size is large. This is true for virtually any distribution! 
+
 ```{r}
+# Set Seed
 set.seed(33)
+
 lambda <- 0.2
-# We perform 1000 simulations with 40 samples 
-sample_size <- 40
-simulations <- 1000
 
-# Lets do 1000 simulations
-simulated_exponentials <- replicate(simulations, mean(rexp(sample_size,lambda)))
-# 
-simulated_means  <- mean(simulated_exponentials)
-simulated_median <- median(simulated_exponentials)
-simulated_sd     <- sd(simulated_exponentials)
+# We set to perform 1000 simulations with 40 samples 
+sam_size <- 40
+sim_num <- 1000
+
+# This will do a 1000 simulations
+sim_exp <- replicate(sim_num, mean(rexp(sam_size,lambda)))
+ 
+sim_mean <- mean(sim_exp)
+sim_median <- median(sim_exp)
+sim_sd <- sd(sim_exp)
+sim_mean
+sim_median
+sim_sd
 ```
-
 
 ### 1. Show the sample mean and compare it to the theoretical mean of the distribution.
 
 The theoretical mean and sample mean for the exponential distribution.
 ```{r}
-tm <- 1/lambda                     # calculate theoretical mean
-sm <- mean(simulated_exponentials) # calculate avg sample mean
+ # calculate theoretical mean
+tm <- 1/lambda
+
+# calculate avg sample mean
+sm <- mean(sim_exp)
+tm
+sm
 ```
 
 Theoretical mean: 5.
@@ -54,10 +72,10 @@ Sampling mean: 4.9644306.
 The sample mean is very close to the theoretical mean at 5.
 
 ```{r}
-hist(simulated_exponentials,  freq=TRUE, breaks=50,
+hist(sim_exp,  freq=TRUE, breaks=50,
      main="Sample Means of Exponentials (lambda 0.2)",
      xlab="Sample Means from 1000 Simulations")
-abline(v=5, col="blue", lwd=2)
+abline(v=5, col="red", lwd=2)
 ```
 
 ### 2. Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
@@ -67,7 +85,10 @@ abline(v=5, col="blue", lwd=2)
 theor_sd <- (1/lambda)/sqrt(40)
 # Calculation of the theoretical variance for sampling data
 theor_var <- theor_sd^2
-simulated_var    <- var(simulated_exponentials)
+sim_var    <- var(sim_exp)
+theor_sd
+theor_var
+sim_var
 ```
 
 The variance for the sample data is : 0.6456619 and the theoretical variance is : 0.625 Both these values are quite close to each other.
@@ -77,7 +98,21 @@ The variance for the sample data is : 0.6456619 and the theoretical variance is 
 We see that the distribution is approximately normal as the straight line is closer to the points.
 
 ```{r}
-qqnorm(simulated_exponentials, ylab = "Sample Means of Exponentials (lambda 0.2)")
-qqline(simulated_exponentials, col = 2)
+qqnorm(sim_exp, ylab = "Sample Mean Exponential (lambda 0.2)")
+qqline(sim_exp, col = 2)
 ```
 
+### Conclusion
+The green line is the distribution of averages of the simulated samples. The red line is the normal distribution with lambda = 0.2. The figure shows that the 2 distribution lines, green and red, are well aligned thus the distribution of simulated data is approximately normal.
+
+```{r}
+sim_mean_df <- data.frame(sim_exp);
+names(sim_mean_df) <- c("sim_exp")
+
+ggplot(sim_mean_df, aes(x=sim_exp)) +
+       labs(x="similuated mean", title="Distribution of Averages of Samples vs Theoretical Mean") +
+       geom_histogram(aes(y=..density..), color="green", fill="blue", size=1, binwidth=0.2) + 
+       geom_density(color="green", size=1) + 
+       stat_function(fun=dnorm, arg=list(mean=tm, sd=0.791), color = "red", size=1) + 
+       geom_vline(xintercept=tm, color="black", size=1);
+```

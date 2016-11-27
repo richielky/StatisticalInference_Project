@@ -3,15 +3,15 @@ title: "Tooth Growth"
 author: "Richie Liew"
 date: "Nov 16, 2016"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=13, fig.height=9, fig.path='Figures2/', echo=TRUE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.width=5, fig.height=5, fig.path='Figures2/', echo=TRUE, warning=FALSE, message=FALSE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 library(ggplot2)
 library(lattice)
 ```
@@ -19,26 +19,21 @@ library(lattice)
 ### Part 2: Basic Inferential Data Analysis Instructionsless 
 Now in the second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
 
-### 1. Load the ToothGrowth data and perform some basic exploratory data analyses
+#### 1. Load the ToothGrowth data and perform some basic exploratory data analyses
 ```{r}
 data(ToothGrowth)
 str(ToothGrowth)
 ```
 
 ```{r}
-# convert variable dose from numeric to factor
-ToothGrowth$dose <- as.factor(ToothGrowth$dose)
-# look at the dataset variables after conversion
-str(ToothGrowth)
+ToothGrowth$dose <- as.factor(ToothGrowth$dose) # convert from numeric to factor
+str(ToothGrowth) # look at the dataset variables
 ```
 
-### 2. Provide a basic summary of the data.
+#### 2. Provide a basic summary of the data.
 ```{r}
 head(ToothGrowth)
 str(ToothGrowth)
-```
-
-```{r}
 summary(ToothGrowth)
 nrow(ToothGrowth)
 ```
@@ -46,10 +41,6 @@ nrow(ToothGrowth)
 ```{r}
 # split of cases between different dose levels and delivery methods
 table(ToothGrowth$dose, ToothGrowth$supp)
-```
-
-```{r}
-ggplot(aes(x=dose, y=len), data=ToothGrowth) + geom_boxplot(aes(fill=dose))
 ```
 
 ```{r}
@@ -64,12 +55,12 @@ Visual examination of relationships between variables.
 xyplot(len ~ supp | dose, ToothGrowth,
        layout= c(3,1), 
        main=list(label=" Relationship between Tooth Growth, Delivery Method and Dosage",cex=0.75),
-       xlab=list(label="Type of Supplement and Dosage", cex=0.75),
-       ylab=list(label=" Length of Tooth Growth", cex=0.75),
+       xlab=list(label="Type of Supplement and Dosage", cex=0.5),
+       ylab=list(label=" Length of Tooth Growth", cex=0.5),
        par.settings = simpleTheme(col="blue"))
 ```
 
 ### 4. State your conclusions and the assumptions needed for your conclusions.
 
-1. Supplement type has no effect on tooth growth.
-2. Inreasing the dose level leads to increased tooth growth.
+1. Inreasing the dose level will leads to increased in tooth growth.
+2. Supplement type does not have any effect to the tooth growth.
